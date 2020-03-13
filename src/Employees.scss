@@ -1,0 +1,64 @@
+#Employees-container {
+  width: 50%;
+  padding: 15px;
+  border: solid 1px black;
+  float: left;
+
+  .employee-wrapper {
+    border:solid 1px black;
+    .employee-container {
+      cursor: pointer;
+      clear: both;
+      overflow: auto;
+
+      &.employee-selected {
+        background: #dcedc1;
+      }
+
+      &:nth-child(even) {
+        background: silver
+      }
+
+      .employee-fullname,
+      .employee-role,
+      .employee-arrival_date {
+        display: block;
+        width: 33%;
+        float: left;
+      }
+
+      &:hover {
+        background: #dcedc1;
+      }
+
+      &.header {
+        background: black;
+        color: white;
+
+        .employe-arrival_date {
+          cursor: pointer;
+        }
+
+      }
+
+
+    }
+  }
+
+  .filters-container {
+    padding: 1%;
+
+    .filters-roles-container {
+      text-align: left;
+    }
+  }
+}
+
+
+#Employee-preview-container {
+  border: solid 1px green;
+  float: right;
+  min-height: 150px;
+  float: right;
+  width: 50%;
+}

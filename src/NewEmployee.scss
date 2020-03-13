@@ -1,0 +1,17 @@
+#new_employee {
+  padding:15px;
+  width:50%;
+  float:right;
+  min-height: 150px;
+  border:solid 1px blue;
+
+  label {
+    display: block;
+    width:150px;
+  }
+  .dropzone {
+    border:dotted 3px silver;
+    width:50%;
+    height:200px;
+  }
+}

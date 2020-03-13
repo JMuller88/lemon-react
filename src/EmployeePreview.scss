@@ -1,0 +1,16 @@
+#employee_preview {
+  padding:15px;
+  .attributes_container {
+    margin-left: 200px;
+  }
+
+  .avatar {
+    float: left;
+    max-width: 160px;
+    max-height: 160px;
+
+    img {
+      width: 100%;
+    }
+  }
+}
