@@ -1,9 +1,5 @@
 #new_employee {
   padding:15px;
-  width:50%;
-  float:right;
-  min-height: 150px;
-  border:solid 1px blue;
 
   label {
     display: block;
@@ -11,7 +7,11 @@
   }
   .dropzone {
     border:dotted 3px silver;
-    width:50%;
-    height:200px;
+    width:150px;
+    min-height:200px;
+    border-radius: 15px;
+    p {
+      text-align: center;
+    }
   }
 }

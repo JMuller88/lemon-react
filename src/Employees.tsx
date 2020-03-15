@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import './Employees.scss';
 import {EmployeePreview} from './EmployeePreview';
 import axios from 'axios';
+import {Link} from 'react-router-dom';
 
 const dateFormat = require('dateformat');
 const filter = require('lodash/filter');
@@ -65,7 +66,7 @@ export const Employees: React.FC = () => {
         setEmployeePreviewId(employeeID);
     }
 
-    useEffect( () => {
+    useEffect(() => {
         axios.get('http://lemon-employees.com/api/employees').then(datas => {
             setEmployees(datas.data.employees);
             setRoles(datas.data.roles);
@@ -90,17 +91,18 @@ export const Employees: React.FC = () => {
 
     const Employee: React.FC<IEmployee> = (employee: IEmployee) => {
         return (
-            <div
-                className={employee.id == employeePreviewId ? "employee-container employee-selected" : "employee-container"}
-                key={employee.id}
-                data-employee_id={employee.id}
-                onClick={handleEmployeePreview}>
-                <div className="employee-fullname">{employee.fullname}</div>
-                <div className="employee-role">{getRole(employee.role_id)}</div>
-                <div className="employee-arrival_date">
-                    {dateFormat(employee.arrival_date * 1000, 'dd/mm/yyyy')}
+            <Link to={'/employee/'+employee.id} className={employee.id == employeePreviewId ? "employee-container employee-selected" : "employee-container"}>
+                <div
+                    key={employee.id}
+                    data-employee_id={employee.id}
+                    onClick={handleEmployeePreview}>
+                    <div className="employee-fullname">{employee.fullname}</div>
+                    <div className="employee-role">{getRole(employee.role_id)}</div>
+                    <div className="employee-arrival_date">
+                        {dateFormat(employee.arrival_date * 1000, 'dd/mm/yyyy')}
+                    </div>
                 </div>
-            </div>
+            </Link>
         );
     }
 
@@ -134,7 +136,8 @@ export const Employees: React.FC = () => {
 
                 <div className="help">
                     Il suffit de cliquer sur une ligne pour afficher les détails de la personne.<br/>
-                    Le tri sur le role n'est pas effectif. Pour trier par date d'arrivée, il suffit de cliquer sur l'entête de la colonne.
+                    Le tri sur le role n'est pas effectif. Pour trier par date d'arrivée, il suffit de cliquer sur
+                    l'entête de la colonne.
                 </div>
                 <hr/>
                 <div className="employee-wrapper">
@@ -148,12 +151,15 @@ export const Employees: React.FC = () => {
                             Date d'arrivée (click 2 sort)
                         </div>
                     </div>
-                    {getFilteredEmployees().map(employe => <Employee {...employe} key={employe.id}/>)}
+                    {
+                        getFilteredEmployees()
+                            .map(employe =>
+
+                                <Employee {...employe} key={employe.id}/>
+                            )
+                    }
                 </div>
-                <div className="help">Il pourrait être sympa et utile de prévoir une pagination pour le futur... </div>
-            </div>
-            <div id="Employee-preview-container">
-                <EmployeePreview employeeIdProps={employeePreviewId}/>
+                <div className="help">Il pourrait être sympa et utile de prévoir une pagination pour le futur...</div>
             </div>
         </div>
     );

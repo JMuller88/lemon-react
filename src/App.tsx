@@ -1,15 +1,27 @@
 import React from 'react';
-import logo from './logo.svg';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import './App.scss';
 import {Employees} from './Employees';
 import {NewEmployee} from './NewEmployee';
+import {EmployeePreview} from "./EmployeePreview";
+import {Nav} from './Nav';
 
 
 function App() {
     return (
-        <div className="App">
-            <Employees></Employees>
-            <NewEmployee/>
+        <div>
+            <Router>
+                <div className="App">
+                    <Nav/>
+                    <div className="app-wrapper">
+                        <Switch>
+                            <Route path={["/", "/employees"]} exact component={Employees}/>
+                            <Route path="/employee/new" exact component={NewEmployee}/>
+                            <Route path="/employee/:id" exact component={EmployeePreview}/>
+                        </Switch>
+                    </div>
+                </div>
+            </Router>
         </div>
     );
 }

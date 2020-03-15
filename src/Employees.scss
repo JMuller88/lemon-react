@@ -1,15 +1,15 @@
 #Employees-container {
-  width: 50%;
   padding: 15px;
   border: solid 1px black;
-  float: left;
 
   .employee-wrapper {
     border:solid 1px black;
     .employee-container {
+      display: block;
       cursor: pointer;
       clear: both;
       overflow: auto;
+      color:black;
 
       &.employee-selected {
         background: #dcedc1;

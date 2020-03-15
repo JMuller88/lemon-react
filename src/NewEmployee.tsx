@@ -109,23 +109,27 @@ export const NewEmployee: React.FC = () => {
                 également à faire.
             </div>
 
-            <label>Prénom</label> <input type="text" name="firstname" value={state.firstname}
-                                         onChange={handleChange}/><br/>
-            <label>Nom</label> <input type="text" name="lastname" value={state.lastname}
-                                      onChange={handleChange}/><br/>
-            <label>job_title</label>
-            <input type="text" name="job_title" value={state.job_title} onChange={handleChange}/><br/>
-            <label>email</label>
-            <input type="text" name="email" value={state.email} onChange={handleChange}/><br/>
-            <label>phone</label>
-            <input type="text" name="phone" value={state.phone} onChange={handleChange}/><br/>
-            <label>arrival_date</label>
-            <input type="text" name="arrival_date" value={state.arrival_date} onChange={handleChange}/><br/>
-            <label>role</label>
-            <input type="text" name="role_id" value={state.role_id} onChange={handleChange}/><br/>
-            <button onClick={handleSubmitForm}>Valider</button>
+            <div>
+                <label>Prénom</label> <input type="text" name="firstname" value={state.firstname}
+                                             onChange={handleChange}/><br/>
+                <label>Nom</label> <input type="text" name="lastname" value={state.lastname}
+                                          onChange={handleChange}/><br/>
+                <label>job_title</label>
+                <input type="text" name="job_title" value={state.job_title} onChange={handleChange}/><br/>
+                <label>email</label>
+                <input type="text" name="email" value={state.email} onChange={handleChange}/><br/>
+                <label>phone</label>
+                <input type="text" name="phone" value={state.phone} onChange={handleChange}/><br/>
+                <label>arrival_date</label>
+                <input type="text" name="arrival_date" value={state.arrival_date} onChange={handleChange}/><br/>
+                <label>role</label>
+                <input type="text" name="role_id" value={state.role_id} onChange={handleChange}/><br/>
 
-            <MyDropzone/>
+
+                <MyDropzone/>
+            </div>
+            <hr/>
+            <button onClick={handleSubmitForm}>Valider</button>
         </div>
     );
 }
