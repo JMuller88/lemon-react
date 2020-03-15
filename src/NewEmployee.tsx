@@ -45,6 +45,8 @@ export const NewEmployee: React.FC = () => {
     const [day, setDay] = React.useState<Day>(today);
     // Store roles from API
     const [roles, setRoles] = React.useState<Role[]>([]);
+    // Remap for select input
+    const options = roles.map(role => ({label:role.label, value:role.id}));
 
     // Update state with form's data
     const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -53,6 +55,10 @@ export const NewEmployee: React.FC = () => {
         if (null !== state) {
             setState({...state, [name]: value});
         }
+    }
+    // Update select role_id
+    const handleSelectClick = (e: OptionTypeBase) => {
+        setState({...state, role:e});
     }
 
 
@@ -128,19 +134,9 @@ export const NewEmployee: React.FC = () => {
         axios.get('http://lemon-employees.com/api/roles')
             .then(datas => {
                 setRoles(datas.data.roles);
-                console.log(datas);
             })
     }, []);
 
-    const [role_id, setRoleId] = useState<OptionTypeBase>({});
-
-    // Update select role_id
-    const handleSelectClick = (e: OptionTypeBase) => {
-        // setRoleId(e);
-        setState({...state, role:e});
-    }
-
-    const options = roles.map(role => ({label:role.label, value:role.id}));
 
     return (
         <div id="new_employee">
