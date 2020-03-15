@@ -1,7 +1,13 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import axios from 'axios';
 import {useDropzone} from 'react-dropzone'
+import DatePicker, { Day } from 'react-modern-calendar-datepicker'
+import padStart from 'lodash/padStart';
+import toString from 'lodash/toString';
+import Select, {OptionTypeBase} from 'react-select';
 import './NewEmployee.scss';
+import 'react-modern-calendar-datepicker/lib/DatePicker.css';
+
 
 interface IEmployee {
     firstname: string;
@@ -9,13 +15,37 @@ interface IEmployee {
     job_title: string;
     email: string;
     phone: string;
-    arrival_date: string;
-    role_id: string;
+    role: OptionTypeBase;
+}
+
+interface Role {
+    id: number,
+    label: string
 }
 
 export const NewEmployee: React.FC = () => {
+    // Store user datas
+    const [state, setState] = useState<IEmployee>({
+        firstname: '',
+        lastname: '',
+        job_title: '',
+        email: '',
+        phone: '',
+        role: {}
+    });
     // Store avatar
     const [avatar, setAvatar] = useState<any>(null);
+    // Store date
+    const today = {
+        day: new Date().getDate(),
+        month: new Date().getMonth()+1,
+        year: new Date().getFullYear()
+    }
+    // Store Day
+    const [day, setDay] = React.useState<Day>(today);
+    // Store roles from API
+    const [roles, setRoles] = React.useState<Role[]>([]);
+
     // Update state with form's data
     const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
         const {name, value}: any = e.target;
@@ -25,22 +55,11 @@ export const NewEmployee: React.FC = () => {
         }
     }
 
+
     const handleSubmitForm = (e: React.FormEvent<HTMLButtonElement>) => {
-        console.log('button clicked');
         e.preventDefault();
         sendRequest();
     }
-
-    // To many properties to use one hook for each properties
-    const [state, setState] = useState<IEmployee>({
-        firstname: '',
-        lastname: '',
-        job_title: '',
-        email: '',
-        phone: '',
-        arrival_date: '',
-        role_id: ''
-    });
 
     function sendRequest() {
         // checking args
@@ -50,15 +69,20 @@ export const NewEmployee: React.FC = () => {
         }
 
         // making request's args
+        const arrival_date = day.year+'-'
+            +padStart(toString(day.month), 2, '0')+'-'
+            +padStart(toString(day.day), 2, '0');
+
         const formData = new FormData();
+
         formData.append("avatar", avatar, avatar.name);
         formData.append('firstname', state.firstname);
         formData.append('lastname', state.lastname);
-        formData.append('arrival_date', state.arrival_date);
+        formData.append('arrival_date', arrival_date);
         formData.append('job_title', state.job_title);
         formData.append('email', state.email);
         formData.append('phone', state.phone);
-        formData.append('role_id', state.role_id);
+        formData.append('role_id', state.role.value);
 
         axios.post(
             "http://lemon-employees.com/api/employee",
@@ -75,7 +99,6 @@ export const NewEmployee: React.FC = () => {
             })
 
         return;
-
     }
 
     // Dropzone package
@@ -100,6 +123,25 @@ export const NewEmployee: React.FC = () => {
         )
     }
 
+    // loading datas from API
+    useEffect(() => {
+        axios.get('http://lemon-employees.com/api/roles')
+            .then(datas => {
+                setRoles(datas.data.roles);
+                console.log(datas);
+            })
+    }, []);
+
+    const [role_id, setRoleId] = useState<OptionTypeBase>({});
+
+    // Update select role_id
+    const handleSelectClick = (e: OptionTypeBase) => {
+        // setRoleId(e);
+        setState({...state, role:e});
+    }
+
+    const options = roles.map(role => ({label:role.label, value:role.id}));
+
     return (
         <div id="new_employee">
             <h2>Ajout d'une personne à l'équipe</h2>
@@ -121,9 +163,15 @@ export const NewEmployee: React.FC = () => {
                 <label>phone</label>
                 <input type="text" name="phone" value={state.phone} onChange={handleChange}/><br/>
                 <label>arrival_date</label>
-                <input type="text" name="arrival_date" value={state.arrival_date} onChange={handleChange}/><br/>
+                <DatePicker value={day} onChange={setDay} />
                 <label>role</label>
-                <input type="text" name="role_id" value={state.role_id} onChange={handleChange}/><br/>
+
+                <Select value={state.role}
+                        onChange={handleSelectClick}
+                        options={options}
+                />
+
+                {/*<input type="text" name="role_id" value={state.role_id} onChange={handleChange}/><br/>*/}
 
 
                 <MyDropzone/>

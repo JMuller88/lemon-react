@@ -154,7 +154,6 @@ export const Employees: React.FC = () => {
                     {
                         getFilteredEmployees()
                             .map(employe =>
-
                                 <Employee {...employe} key={employe.id}/>
                             )
                     }
