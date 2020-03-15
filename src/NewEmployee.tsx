@@ -150,12 +150,6 @@ export const NewEmployee: React.FC = () => {
     return (
         <div id="new_employee">
             <h2>Ajout d'une personne à l'équipe</h2>
-            <div className="help">
-                To be continued... La requête est lancée lorsque l'image est déposée ou choisie...<br/>
-                Oui, je sais, c'est stupide ... Mais manque de temps... Le choix du rôle en liste déroulante reste
-                également à faire.
-            </div>
-
             <div>
                 <label>Prénom</label> <input type="text" name="firstname" value={state.firstname}
                                              onChange={handleChange}/><br/>
