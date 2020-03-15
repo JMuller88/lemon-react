@@ -25,14 +25,16 @@ interface Role {
 
 export const NewEmployee: React.FC = () => {
     // Store user datas
-    const [state, setState] = useState<IEmployee>({
+    const initState = {
         firstname: '',
         lastname: '',
         job_title: '',
         email: '',
         phone: '',
         role: {}
-    });
+    };
+
+    const [state, setState] = useState<IEmployee>(initState);
     // Store avatar
     const [avatar, setAvatar] = useState<any>(null);
     // Store date
@@ -61,7 +63,7 @@ export const NewEmployee: React.FC = () => {
         setState({...state, role:e});
     }
 
-
+    // Send request, after click button
     const handleSubmitForm = (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
         sendRequest();
@@ -101,7 +103,14 @@ export const NewEmployee: React.FC = () => {
             }
         )
             .then(datas => {
-                console.log(datas);
+                // Todo : replace with switch
+                // Maybe use flash messages for informations
+                if (datas.status == 201) // User created
+                {
+                    // init form
+                    setState(initState);
+                    alert("L'utilisateur a bien été créé");
+                }
             })
 
         return;
@@ -166,9 +175,6 @@ export const NewEmployee: React.FC = () => {
                         onChange={handleSelectClick}
                         options={options}
                 />
-
-                {/*<input type="text" name="role_id" value={state.role_id} onChange={handleChange}/><br/>*/}
-
 
                 <MyDropzone/>
             </div>
