@@ -93,7 +93,7 @@ export const NewEmployee: React.FC = () => {
         formData.append('role_id', state.role.value);
 
         axios.post(
-            "http://lemon-employees.com/api/employee",
+            process.env.REACT_APP_API_URL+"employee",
             formData,
             {
                 headers: {
@@ -140,7 +140,7 @@ export const NewEmployee: React.FC = () => {
 
     // loading datas from API
     useEffect(() => {
-        axios.get('http://lemon-employees.com/api/roles')
+        axios.get(process.env.REACT_APP_API_URL+'roles')
             .then(datas => {
                 setRoles(datas.data.roles);
             })

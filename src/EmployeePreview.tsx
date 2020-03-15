@@ -37,7 +37,7 @@ export const EmployeePreview: React.FC<RouteComponentProps<{ id: string }>> = (p
     const [employee, setEmployee] = useState<IEmployee | null>(null);
 
     useEffect(() => {
-        axios.get('http://lemon-employees.com/api/employee/' + employeeId)
+        axios.get(process.env.REACT_APP_API_URL+'employee/' + employeeId)
             .then(datas => {
                 setEmployee(datas.data.employee);
             })
@@ -45,9 +45,11 @@ export const EmployeePreview: React.FC<RouteComponentProps<{ id: string }>> = (p
 
     return (
         <div id="employee_preview">
+
             <h2>Visualisation d'un membre de l'équipe</h2>
             {employee &&
             <div>
+
                 <div className="help">Les SVG ne s'affichent pas, visiblement un problème de mimetype, le back retourne
                     un text/utf-8 dans les headers pour les .svg. Fonctionne bien après l'upload d'un jpeg ou png.
                 </div>

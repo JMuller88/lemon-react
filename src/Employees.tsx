@@ -67,7 +67,7 @@ export const Employees: React.FC = () => {
     }
 
     useEffect(() => {
-        axios.get('http://lemon-employees.com/api/employees').then(datas => {
+        axios.get(process.env.REACT_APP_API_URL+'employees').then(datas => {
             setEmployees(datas.data.employees);
             setRoles(datas.data.roles);
         });
