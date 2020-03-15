@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
+import axios from 'axios';
 import {useDropzone} from 'react-dropzone'
 import './NewEmployee.scss';
 
@@ -42,30 +43,39 @@ export const NewEmployee: React.FC = () => {
     });
 
     function sendRequest() {
-        if (null === avatar)
-        {
+        // checking args
+        if (null === avatar) {
             alert('Vous devez choisir un avatar');
             return;
         }
-        return new Promise((resolve, reject) => {
-            const req = new XMLHttpRequest();
-            // req.setRequestHeader('Accept', "application/json");
 
-            const formData = new FormData();
-            formData.append("avatar", avatar, avatar.name);
-            formData.append('firstname', state.firstname);
-            formData.append('lastname', state.lastname);
-            formData.append('arrival_date', state.arrival_date);
-            formData.append('job_title', state.job_title);
-            formData.append('email', state.email);
-            formData.append('phone', state.phone);
-            formData.append('role_id', state.role_id);
+        // making request's args
+        const formData = new FormData();
+        formData.append("avatar", avatar, avatar.name);
+        formData.append('firstname', state.firstname);
+        formData.append('lastname', state.lastname);
+        formData.append('arrival_date', state.arrival_date);
+        formData.append('job_title', state.job_title);
+        formData.append('email', state.email);
+        formData.append('phone', state.phone);
+        formData.append('role_id', state.role_id);
 
-            // Todo : This should REALLY NOT be here...
-            // And it would be nice to check if everything is ok or it an error occured...
-            req.open("POST", "http://lemon-employees.com/api/employee");
-            req.send(formData);
-        });
+        axios.post(
+            "http://lemon-employees.com/api/employee",
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }
+        )
+            .then(datas => {
+                console.log(datas);
+            })
+
+        return;
+
     }
 
     // Dropzone package
@@ -95,7 +105,8 @@ export const NewEmployee: React.FC = () => {
             <h2>Ajout d'une personne à l'équipe</h2>
             <div className="help">
                 To be continued... La requête est lancée lorsque l'image est déposée ou choisie...<br/>
-                Oui, je sais, c'est stupide ... Mais manque de temps... Le choix du rôle en liste déroulante reste également à faire.
+                Oui, je sais, c'est stupide ... Mais manque de temps... Le choix du rôle en liste déroulante reste
+                également à faire.
             </div>
 
             <label>Prénom</label> <input type="text" name="firstname" value={state.firstname}

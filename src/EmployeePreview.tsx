@@ -1,6 +1,7 @@
 import * as React from "react";
 import {useEffect, useState} from "react";
 import './EmployeePreview.scss';
+import axios from 'axios';
 const dateFormat = require('dateformat');
 
 interface IEmployee {
@@ -41,15 +42,11 @@ export const EmployeePreview: React.FC<IProps> = (props) => {
             return;
         }
 
-        // Yes, I know, this should not be hardcoded here...
-        fetch('http://lemon-employees.com/api/employee/' + employeeId)
-            .then(response => response.json())
-            .then((datas) => {
-                // Update state with API datas
-                setEmployee(datas.employee);
+        axios.get('http://lemon-employees.com/api/employee/' + employeeId)
+            .then(datas => {
+                setEmployee(datas.data.employee);
             })
-        //todo : catch ... (it could be nice ! ;))
-        ;
+
     }, [employeeId]);
 
     return (

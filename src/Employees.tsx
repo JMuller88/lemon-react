@@ -2,6 +2,7 @@ import * as React from "react";
 import {useEffect, useState} from "react";
 import './Employees.scss';
 import {EmployeePreview} from './EmployeePreview';
+import axios from 'axios';
 
 const dateFormat = require('dateformat');
 const filter = require('lodash/filter');
@@ -64,16 +65,11 @@ export const Employees: React.FC = () => {
         setEmployeePreviewId(employeeID);
     }
 
-    useEffect(() => {
-        // Yes, this url should really NOT be here, I'm sorry, Time's up !
-        fetch('http://lemon-employees.com/api/employees')
-            .then(response => response.json())
-            .then((datas) => {
-                setEmployees(datas.employees);
-                setRoles(datas.roles);
-            })
-        //todo catch ... again
-        ;
+    useEffect( () => {
+        axios.get('http://lemon-employees.com/api/employees').then(datas => {
+            setEmployees(datas.data.employees);
+            setRoles(datas.data.roles);
+        });
     }, [])
 
     // Sorting employees when sorter's changed
