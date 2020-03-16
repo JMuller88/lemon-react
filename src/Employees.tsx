@@ -1,14 +1,13 @@
 import * as React from "react";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import './Employees.scss';
-import {EmployeePreview} from './EmployeePreview';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 
 const dateFormat = require('dateformat');
 const filter = require('lodash/filter');
 const orderBy = require('lodash/orderBy');
-const toInteger = require('lodash/toInteger');
+const toString = require('lodash/toString');
 
 
 interface IEmployee {
@@ -22,6 +21,7 @@ interface IEmployee {
 interface IRole {
     id: number;
     label: string;
+    checked: boolean;
 }
 
 interface ISorter {
@@ -38,18 +38,28 @@ export const Employees: React.FC = () => {
         field: "arrival_date",
         order: true
     })
-    const [employeePreviewId, setEmployeePreviewId] = useState<number | null>(null);
 
+    // filtering by name
     const handleFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
         const {name, value}: any = e.target;
         setFilterName(value);
     }
 
+    // filtering by role
+
+    const [, updateState] = React.useState();
+    const forceUpdate = useCallback(() => updateState({}), []);
     const handleSelectRole = (e: React.SyntheticEvent<HTMLInputElement>) => {
         const {name, value}: any = e.target;
-        // To be continued...
+        // look for the role
+        const foundIndex = roles.findIndex(role => role.id == name);
+        roles[foundIndex].checked = !roles[foundIndex].checked;
+        setRoles(roles);
+        // We force re-render
+        forceUpdate();
     }
 
+    // sort by date
     const handleSortToggle = (e: React.SyntheticEvent<HTMLDivElement>) => {
         const fieldName = e.currentTarget.dataset.sortfield;
         if (sorter.field == fieldName) {
@@ -61,15 +71,13 @@ export const Employees: React.FC = () => {
         setSorter({field: fieldName, order: true});
     }
 
-    const handleEmployeePreview = (e: React.SyntheticEvent<HTMLDivElement>) => {
-        const employeeID = undefined !== e.currentTarget.dataset.employee_id ? toInteger(e.currentTarget.dataset.employee_id) : null;
-        setEmployeePreviewId(employeeID);
-    }
-
+    // Load data from API
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL+'employees').then(datas => {
+        axios.get(process.env.REACT_APP_API_URL + 'employees').then(datas => {
             setEmployees(datas.data.employees);
-            setRoles(datas.data.roles);
+            setRoles(datas.data.roles.map((role: IRole) => {
+                return {id: role.id, label: role.label, checked: false}
+            }));
         });
     }, [])
 
@@ -78,24 +86,35 @@ export const Employees: React.FC = () => {
         setEmployees(orderBy(employees, [sorter.field], [sorter.order ? "asc" : "desc"]));
     }, [sorter]);
 
-
+    // filters employees by name and/or role
     const getFilteredEmployees: () => (IEmployee[]) = () => {
-        if (!filterName) {
-            return employees;
+        let filteredEmployees = employees;
+
+        // Apply name filtering
+        if (filterName) {
+            filteredEmployees = filter(filteredEmployees, (employee: IEmployee) => {
+                return employee.fullname.toLowerCase().indexOf(filterName.toLowerCase()) !== -1;
+            });
         }
 
-        return filter(employees, (employee: IEmployee) => {
-            return employee.fullname.toLowerCase().indexOf(filterName.toLowerCase()) !== -1;
-        });
+        // Apply role filtering
+        const rolesFiltering = filter(roles, {checked: true});
+        if (rolesFiltering.length) {
+            filteredEmployees = filter(filteredEmployees, (employee: IEmployee) => {
+                    return (-1 !== rolesFiltering.findIndex((role: { id: number; }) => role.id == employee.role_id))
+                }
+            );
+        }
+
+        return filteredEmployees;
     }
 
     const Employee: React.FC<IEmployee> = (employee: IEmployee) => {
         return (
-            <Link to={'/employee/'+employee.id} className={employee.id == employeePreviewId ? "employee-container employee-selected" : "employee-container"}>
+            <Link to={'/employee/' + employee.id} className="employee-container">
                 <div
                     key={employee.id}
-                    data-employee_id={employee.id}
-                    onClick={handleEmployeePreview}>
+                    data-employee_id={employee.id}>
                     <div className="employee-fullname">{employee.fullname}</div>
                     <div className="employee-role">{getRole(employee.role_id)}</div>
                     <div className="employee-arrival_date">
@@ -122,11 +141,14 @@ export const Employees: React.FC = () => {
                 <div className="filters-container">
                     Rechercher une personne : <input name="name" value={filterName} onChange={handleFilterChange}/>
                     <hr/>
-                    Filter par fonction <div className="help"> (To be continued...)</div><br/>
+                    Filter par fonction<br/>
                     <div className="filters-roles-container">
                         {roles.map(role =>
-                            <div><input type="checkbox" data-role_id={role.id}
-                                        onChange={handleSelectRole}/>{role.label}</div>
+                            <div key={role.id}><input type="checkbox" data-role_id={role.id}
+                                                      name={toString(role.id)}
+                                                      checked={role.checked}
+                                                      onChange={handleSelectRole}/>{role.label}
+                            </div>
                         )}
                     </div>
                 </div>
